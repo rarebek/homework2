@@ -1,0 +1,101 @@
+syntax = "proto3";
+
+option go_package = ".";
+
+message Company {
+    string id = 1;
+    string company_name = 2;
+    string description = 3;
+    string email = 4;
+    string password = 5;
+    string address = 6;
+    string profile_picture = 7;
+    string website = 8;
+    string industry = 9;
+    int64 employee_count = 10;
+    string phone_number = 11;
+    string refresh_token = 12;
+}
+
+message Freelancer {
+    string id = 1;
+    string first_name = 2;
+    string last_name = 3;
+    string username = 4;
+    string biography = 5;
+    string profile_picture = 6;
+    string email = 7;
+    string password = 8;
+    string phone_number = 9;
+    string address = 10;
+    string resume = 11;
+    string refresh_token = 12;
+}
+
+message CompanyRegisterRequest {
+    string id = 1;
+    string company_name = 2;
+    string description = 3;
+    string email = 4;
+    string password = 5;
+    string address = 6;
+    string profile_picture = 7;
+    string website = 8;
+    string industry = 9;
+    int64 employee_count = 10;
+    string phone_number = 11;
+    string refresh_token = 12;
+}
+
+message CompanyRegisterResponse {
+    string id = 1;
+    string company_name = 2;
+    string description = 3;
+    string email = 4;
+    string password = 5;
+    string address = 6;
+    string profile_picture = 7;
+    string website = 8;
+    string industry = 9;
+    int64 employee_count = 10;
+    string phone_number = 11;
+    string refresh_token = 12;
+    string message = 13;
+}
+
+message CompanyLogInRequest {
+    string email = 1;
+    string password = 2;
+}
+
+message CompanyLogInResponse {
+    string id = 1;
+    string company_name = 2;
+    string description = 3;
+    string email = 4;
+    string password = 5;
+    string address = 6;
+    string profile_picture = 7;
+    string website = 8;
+    string industry = 9;
+    int64 employee_count = 10;
+    string phone_number = 11;
+    string refresh_token = 12;
+    string message = 13;
+}
+
+message CheckUniquenessRequest {
+    string field = 1;
+    string value = 2;
+}
+
+message CheckUniquenessResponse {
+    bool is_unique = 1;
+    string message = 2;
+}
+
+service CompanyService {
+    rpc CompanyRegister(CompanyRegisterRequest) returns (CompanyRegisterResponse);
+    rpc CompanyLogIn(CompanyLogInRequest) returns (CompanyLogInResponse);
+    rpc CheckUniqueness(CheckUniquenessRequest) returns (CheckUniquenessResponse);
+}

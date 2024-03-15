@@ -1,0 +1,217 @@
+definitions:
+  model.CompanyLogInResponse:
+    properties:
+      address:
+        type: string
+      company_name:
+        type: string
+      description:
+        type: string
+      email:
+        type: string
+      employee_count:
+        type: integer
+      id:
+        type: string
+      industry:
+        type: string
+      message:
+        type: string
+      password:
+        type: string
+      phone_number:
+        type: string
+      profile_picture:
+        type: string
+      refresh_token:
+        type: string
+      website:
+        type: string
+    type: object
+  model.CompanyRegisterRequest:
+    properties:
+      address:
+        type: string
+      code:
+        type: integer
+      company_name:
+        type: string
+      description:
+        type: string
+      email:
+        type: string
+      employee_count:
+        type: integer
+      industry:
+        type: string
+      password:
+        type: string
+      phone_number:
+        type: string
+      profile_picture:
+        type: string
+      refresh_token:
+        type: string
+      website:
+        type: string
+    type: object
+  model.CompanyRegisterResponse:
+    properties:
+      address:
+        type: string
+      company_name:
+        type: string
+      description:
+        type: string
+      email:
+        type: string
+      employee_count:
+        type: integer
+      id:
+        type: string
+      industry:
+        type: string
+      message:
+        type: string
+      password:
+        type: string
+      phone_number:
+        type: string
+      profile_picture:
+        type: string
+      refresh_token:
+        type: string
+      website:
+        type: string
+    type: object
+  model.Error:
+    properties:
+      message:
+        type: string
+    type: object
+  model.RegisterCompanyResponse:
+    properties:
+      access_token:
+        type: string
+      address:
+        type: string
+      company_name:
+        type: string
+      description:
+        type: string
+      email:
+        type: string
+      employee_count:
+        type: integer
+      id:
+        type: string
+      industry:
+        type: string
+      password:
+        type: string
+      phone_number:
+        type: string
+      profile_picture:
+        type: string
+      website:
+        type: string
+    type: object
+  model.StandardErrorModel:
+    properties:
+      error:
+        $ref: '#/definitions/model.Error'
+    type: object
+info:
+  contact: {}
+paths:
+  /v1/company/login/{email}/{password}:
+    post:
+      consumes:
+      - application/json
+      description: Api for Logging in
+      parameters:
+      - description: Your email
+        in: path
+        name: email
+        required: true
+        type: string
+      - description: Your password
+        in: path
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.CompanyLogInResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.StandardErrorModel'
+      summary: LogIn
+      tags:
+      - company
+  /v1/company/register:
+    post:
+      consumes:
+      - application/json
+      description: This api is using for creating new company
+      parameters:
+      - description: user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.CompanyRegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.CompanyRegisterResponse'
+      summary: Create company summary
+      tags:
+      - company
+  /v1/company/verify/{email}/{code}:
+    post:
+      consumes:
+      - application/json
+      description: Api for Verifying
+      parameters:
+      - description: Verification email
+        in: path
+        name: email
+        required: true
+        type: string
+      - description: Verification code
+        in: path
+        name: code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.RegisterCompanyResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.StandardErrorModel'
+      summary: Verify
+      tags:
+      - company
+swagger: "2.0"

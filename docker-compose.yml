@@ -1,0 +1,104 @@
+version: '3.8'
+services:
+  userdb:
+    container_name: db
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      PGDATA: /data/postgres
+      POSTGRES_DB: userdb
+    volumes:
+      - db:/dataaaa/postgres
+
+    ports:
+      - "5332:5332"
+    networks:
+      - db
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d postgres" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+
+  user_service:
+    container_name: user_service
+    build: ./user_service
+    depends_on: 
+      - userdb
+    ports:
+      - "9000:9000"
+    networks:
+      - db
+
+  api_gateway:
+    build: ./api_gateway
+    depends_on:
+      - user_service
+      - userdb
+      - migrate
+      - redis
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    networks:
+      - db
+
+
+  migrate:
+    image: migrate/migrate
+    networks:
+      - db
+    volumes:
+      - ./migrations:/migrations
+    command: [ "-path", "/migrations", "-database",  "postgres://postgres:123@db:5432/userdb?sslmode=disable", "up"]
+    links:
+      - userdb
+    depends_on:
+      - userdb
+
+  redis:
+    container_name: redis
+    image: redis
+    ports:
+      - "6280:6280"
+    networks:
+      - db
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "22181:2181"
+    networks:
+      - db
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    ports:
+      - "29092:29092"
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://kafka:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - db
+
+
+
+networks:
+  db:
+    driver: bridge
+
+volumes:
+  db:
+
+
